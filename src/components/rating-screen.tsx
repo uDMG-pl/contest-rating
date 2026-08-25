@@ -128,7 +128,7 @@ export function RatingScreen({
 
       <Card>
         <CardHeader>
-          <CardTitle>{submission.name}</CardTitle>
+          <CardTitle size="lg">{submission.name}</CardTitle>
         </CardHeader>
         <CardContent>
           <dl className="grid gap-5 sm:grid-cols-3">
