@@ -102,6 +102,7 @@ export function RatingScreen({
   const submissionScores = scores[submission.id] ?? {}
   const currentTotal = getSubmissionTotal(submission.id, categories, scores)
   const maximum = categories.length * 10
+  const hasMaximumScore = maximum > 0 && currentTotal === maximum
   const isLastSubmission = currentIndex === submissionCount - 1
   const progress = ((currentIndex + 1) / submissionCount) * 100
   const coordinates =
@@ -165,7 +166,7 @@ export function RatingScreen({
             Wybierz jedną ocenę od 1 do 10 dla każdej kategorii.
           </CardDescription>
           <CardAction>
-            <Badge variant="secondary">
+            <Badge variant={hasMaximumScore ? "goldShimmer" : "secondary"}>
               {currentTotal}/{maximum}
             </Badge>
           </CardAction>

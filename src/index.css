@@ -30,6 +30,7 @@
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --podium-gold: oklch(0.78 0.14 84);
+  --podium-gold-highlight: oklch(0.94 0.09 94);
   --podium-gold-foreground: oklch(0.25 0.05 75);
   --podium-silver: oklch(0.76 0.015 255);
   --podium-silver-foreground: oklch(0.23 0.015 255);
@@ -63,6 +64,7 @@
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
   --color-podium-gold-foreground: var(--podium-gold-foreground);
+  --color-podium-gold-highlight: var(--podium-gold-highlight);
   --color-podium-gold: var(--podium-gold);
   --color-podium-silver-foreground: var(--podium-silver-foreground);
   --color-podium-silver: var(--podium-silver);
@@ -127,6 +129,48 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+@keyframes gold-shimmer {
+  0%,
+  10% {
+    background-position: 200% 50%;
+  }
+
+  40% {
+    background-position: -200% 50%;
+  }
+
+  40.01% {
+    background-position: 200% 50%;
+  }
+
+  70.01%,
+  99.99% {
+    background-position: -200% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@utility animate-gold-shimmer {
+  background-image: linear-gradient(
+    110deg,
+    var(--podium-gold) 0%,
+    var(--podium-gold) 38%,
+    var(--podium-gold-highlight) 50%,
+    var(--podium-gold) 62%,
+    var(--podium-gold) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 250% 100%;
+  animation: gold-shimmer 4s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 @layer base {
