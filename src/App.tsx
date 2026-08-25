@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
-import { DatabaseIcon, TrophyIcon } from "lucide-react"
+import { TrophyIcon } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
 import { CategoryManager } from "@/src/components/category-manager"
 import { RatingScreen } from "@/src/components/rating-screen"
 import { SummaryScreen } from "@/src/components/summary-screen"
@@ -197,15 +196,6 @@ function App() {
           />
         )}
       </main>
-
-      <footer className="px-4 pb-6 sm:px-6">
-        <div className="mx-auto flex w-full max-w-5xl justify-center">
-          <Badge variant="outline">
-            <DatabaseIcon data-icon="inline-start" />
-            Dane zapisują się lokalnie w tej przeglądarce
-          </Badge>
-        </div>
-      </footer>
     </div>
   )
 }
