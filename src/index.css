@@ -29,6 +29,12 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
+  --podium-gold: oklch(0.78 0.14 84);
+  --podium-gold-foreground: oklch(0.25 0.05 75);
+  --podium-silver: oklch(0.76 0.015 255);
+  --podium-silver-foreground: oklch(0.23 0.015 255);
+  --podium-bronze: oklch(0.65 0.12 55);
+  --podium-bronze-foreground: oklch(0.2 0.03 55);
   --radius: 0;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -56,6 +62,12 @@
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+  --color-podium-gold-foreground: var(--podium-gold-foreground);
+  --color-podium-gold: var(--podium-gold);
+  --color-podium-silver-foreground: var(--podium-silver-foreground);
+  --color-podium-silver: var(--podium-silver);
+  --color-podium-bronze-foreground: var(--podium-bronze-foreground);
+  --color-podium-bronze: var(--podium-bronze);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);

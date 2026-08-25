@@ -59,6 +59,8 @@ interface SummaryScreenProps {
   onOpenCategories: () => void
 }
 
+const placementBadgeVariants = ["gold", "silver", "bronze"] as const
+
 export function SummaryScreen({
   categories,
   scores,
@@ -113,7 +115,9 @@ export function SummaryScreen({
                 {ranking.map((row, index) => (
                   <TableRow key={row.submission.id}>
                     <TableCell>
-                      <Badge variant={index === 0 ? "default" : "outline"}>
+                      <Badge
+                        variant={placementBadgeVariants[index] ?? "outline"}
+                      >
                         {index + 1}
                       </Badge>
                     </TableCell>
