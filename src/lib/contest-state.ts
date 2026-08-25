@@ -31,12 +31,12 @@ const AUDIENCE_RATING_CATEGORY: Category = {
 export const DEFAULT_CATEGORIES: readonly Category[] = [
   {
     id: "visual-effect",
-    name: "Efekt wizualny (w tym wielkość budowli)",
+    name: "Efekt wizualny",
   },
   { id: "mechanisms", name: "Mechanizmy" },
   {
     id: "theme-connection",
-    name: "Powiązanie z tematem 1 albo 2",
+    name: "Powiązanie z tematem",
   },
   { id: "idea", name: "Pomysł" },
   AUDIENCE_RATING_CATEGORY,
