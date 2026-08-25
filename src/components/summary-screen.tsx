@@ -154,7 +154,7 @@ export function SummaryScreen({
                           className="text-center tabular-nums"
                           key={category.id}
                         >
-                          {scores[row.submission.id]?.[category.id] ?? 0}
+                          {scores[row.submission.id]?.[category.id] ?? "—"}
                         </TableCell>
                       ))}
                     </TableRow>

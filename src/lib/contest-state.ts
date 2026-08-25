@@ -5,7 +5,8 @@ export interface Category {
   name: string
 }
 
-export type Scores = Record<string, Record<string, number>>
+export type Score = number | null
+export type Scores = Record<string, Record<string, Score>>
 
 export interface ContestState {
   categories: Category[]
@@ -20,8 +21,9 @@ export interface RankingRow {
   percentage: number
 }
 
-export const STORAGE_KEY = "contest-rating:v2"
+export const STORAGE_KEY = "contest-rating:v3"
 
+const PREVIOUS_STORAGE_KEY = "contest-rating:v2"
 const LEGACY_STORAGE_KEY = "contest-rating:v1"
 const AUDIENCE_RATING_CATEGORY: Category = {
   id: "audience-rating",
@@ -53,6 +55,7 @@ export function normalizeScore(value: unknown) {
 function createScores(
   categories: readonly Category[],
   savedScores?: unknown,
+  zeroIsUnrated = false,
 ): Scores {
   const source =
     typeof savedScores === "object" && savedScores !== null
@@ -63,10 +66,19 @@ function createScores(
     SUBMISSIONS.map((submission) => [
       submission.id,
       Object.fromEntries(
-        categories.map((category) => [
-          category.id,
-          normalizeScore(source[submission.id]?.[category.id]),
-        ]),
+        categories.map((category) => {
+          const savedScore = source[submission.id]?.[category.id]
+
+          return [
+            category.id,
+            savedScore === null ||
+            typeof savedScore !== "number" ||
+            !Number.isFinite(savedScore) ||
+            (zeroIsUnrated && savedScore === 0)
+              ? null
+              : normalizeScore(savedScore),
+          ]
+        }),
       ),
     ]),
   )
@@ -111,10 +123,15 @@ export function createDefaultContestState(): ContestState {
 export function loadContestState(): ContestState {
   try {
     const currentSavedValue = window.localStorage.getItem(STORAGE_KEY)
-    const legacySavedValue = currentSavedValue
+    const previousSavedValue = currentSavedValue
       ? null
-      : window.localStorage.getItem(LEGACY_STORAGE_KEY)
-    const savedValue = currentSavedValue ?? legacySavedValue
+      : window.localStorage.getItem(PREVIOUS_STORAGE_KEY)
+    const legacySavedValue =
+      currentSavedValue || previousSavedValue
+        ? null
+        : window.localStorage.getItem(LEGACY_STORAGE_KEY)
+    const savedValue =
+      currentSavedValue ?? previousSavedValue ?? legacySavedValue
 
     if (!savedValue) {
       return createDefaultContestState()
@@ -140,7 +157,11 @@ export function loadContestState(): ContestState {
 
     return {
       categories,
-      scores: createScores(categories, savedState.scores),
+      scores: createScores(
+        categories,
+        savedState.scores,
+        Boolean(previousSavedValue || legacySavedValue),
+      ),
     }
   } catch {
     return createDefaultContestState()
@@ -158,6 +179,7 @@ export function saveContestState(state: ContestState) {
 export function clearSavedContestState() {
   try {
     window.localStorage.removeItem(STORAGE_KEY)
+    window.localStorage.removeItem(PREVIOUS_STORAGE_KEY)
     window.localStorage.removeItem(LEGACY_STORAGE_KEY)
   } catch {
     // The in-memory reset still succeeds when storage is unavailable.

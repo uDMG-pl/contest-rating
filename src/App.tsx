@@ -89,7 +89,7 @@ function App() {
           submission.id,
           {
             ...current.scores[submission.id],
-            [category.id]: 0,
+            [category.id]: null,
           },
         ]),
       ),

@@ -399,7 +399,7 @@ export function createResultsImageUrl(
 
     categories.forEach((category, categoryIndex) => {
       const column = columns[categoryIndex + 4]
-      const score = scores[row.submission.id]?.[category.id] ?? 0
+      const score = scores[row.submission.id]?.[category.id] ?? "—"
 
       context.fillText(String(score), columnX + column.width / 2, centerY)
       columnX += column.width

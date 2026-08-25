@@ -51,7 +51,7 @@ import {
 } from "@/src/lib/contest-state"
 import { cn } from "@/lib/utils"
 
-const RATING_VALUES = Array.from({ length: 10 }, (_, index) => index + 1)
+const RATING_VALUES = Array.from({ length: 11 }, (_, index) => index)
 
 interface RatingScreenProps {
   submission: Submission
@@ -164,7 +164,7 @@ export function RatingScreen({
         <CardHeader>
           <CardTitle>Oceny</CardTitle>
           <CardDescription>
-            Wybierz jedną ocenę od 1 do 10 dla każdej kategorii.
+            Wybierz jedną ocenę od 0 do 10 dla każdej kategorii.
           </CardDescription>
           <CardAction>
             <Badge variant={hasMaximumScore ? "goldShimmer" : "secondary"}>
@@ -176,10 +176,10 @@ export function RatingScreen({
           {categories.length > 0 ? (
             <FieldGroup>
               {categories.map((category, index) => {
-                const score = submissionScores[category.id] ?? 0
-                const wholeScore = Math.floor(score)
-                const hasHalfPoint = score % 1 === 0.5
-                const halfPointDisabled = score === 0 || wholeScore === 10
+                const score = submissionScores[category.id] ?? null
+                const wholeScore = score === null ? 0 : Math.floor(score)
+                const hasHalfPoint = score !== null && score % 1 === 0.5
+                const halfPointDisabled = score === null || wholeScore === 10
                 const labelId = `score-${submission.id}-${category.id}`
                 const halfPointId = `${labelId}-half-point`
 
@@ -195,15 +195,15 @@ export function RatingScreen({
                         <span className="flex w-full items-start justify-between gap-4">
                           <span>{category.name}</span>
                           <Badge
-                            variant={score === 0 ? "secondary" : "outline"}
+                            variant={score === null ? "secondary" : "outline"}
                           >
-                            {score === 0 ? "Nie oceniono" : `${score}/10`}
+                            {score === null ? "Nie oceniono" : `${score}/10`}
                           </Badge>
                         </span>
                       </FieldLegend>
-                      <div className="mt-4 grid grid-cols-6 justify-items-center gap-2 sm:grid-cols-11">
+                      <div className="mt-4 grid grid-cols-6 justify-items-center gap-2 sm:grid-cols-12">
                         <RadioGroup
-                          value={score === 0 ? "" : String(wholeScore)}
+                          value={score === null ? "" : String(wholeScore)}
                           aria-labelledby={labelId}
                           className="contents"
                           onValueChange={(value) => {
