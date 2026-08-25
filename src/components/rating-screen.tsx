@@ -129,12 +129,6 @@ export function RatingScreen({
       <Card>
         <CardHeader>
           <CardTitle>{submission.name}</CardTitle>
-          <CardDescription>Dane zgłoszenia konkursowego</CardDescription>
-          <CardAction>
-            <Badge variant={submission.placeholder ? "secondary" : "default"}>
-              {submission.placeholder ? "Do uzupełnienia" : "Gotowe do oceny"}
-            </Badge>
-          </CardAction>
         </CardHeader>
         <CardContent>
           <dl className="grid gap-5 sm:grid-cols-3">

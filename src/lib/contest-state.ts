@@ -20,7 +20,13 @@ export interface RankingRow {
   percentage: number
 }
 
-export const STORAGE_KEY = "contest-rating:v1"
+export const STORAGE_KEY = "contest-rating:v2"
+
+const LEGACY_STORAGE_KEY = "contest-rating:v1"
+const AUDIENCE_RATING_CATEGORY: Category = {
+  id: "audience-rating",
+  name: "Ocena widzów",
+}
 
 export const DEFAULT_CATEGORIES: readonly Category[] = [
   {
@@ -33,6 +39,7 @@ export const DEFAULT_CATEGORIES: readonly Category[] = [
     name: "Powiązanie z tematem 1 albo 2",
   },
   { id: "idea", name: "Pomysł" },
+  AUDIENCE_RATING_CATEGORY,
 ] as const
 
 function clampScore(value: unknown) {
@@ -103,18 +110,33 @@ export function createDefaultContestState(): ContestState {
 
 export function loadContestState(): ContestState {
   try {
-    const savedValue = window.localStorage.getItem(STORAGE_KEY)
+    const currentSavedValue = window.localStorage.getItem(STORAGE_KEY)
+    const legacySavedValue = currentSavedValue
+      ? null
+      : window.localStorage.getItem(LEGACY_STORAGE_KEY)
+    const savedValue = currentSavedValue ?? legacySavedValue
 
     if (!savedValue) {
       return createDefaultContestState()
     }
 
     const savedState = JSON.parse(savedValue) as Partial<ContestState>
-    const categories = parseCategories(savedState.categories)
+    const savedCategories = parseCategories(savedState.categories)
 
-    if (!categories) {
+    if (!savedCategories) {
       return createDefaultContestState()
     }
+
+    const categories =
+      legacySavedValue &&
+      !savedCategories.some(
+        (category) =>
+          category.id === AUDIENCE_RATING_CATEGORY.id ||
+          category.name.toLocaleLowerCase("pl") ===
+            AUDIENCE_RATING_CATEGORY.name.toLocaleLowerCase("pl"),
+      )
+        ? [...savedCategories, { ...AUDIENCE_RATING_CATEGORY }]
+        : savedCategories
 
     return {
       categories,
@@ -136,6 +158,7 @@ export function saveContestState(state: ContestState) {
 export function clearSavedContestState() {
   try {
     window.localStorage.removeItem(STORAGE_KEY)
+    window.localStorage.removeItem(LEGACY_STORAGE_KEY)
   } catch {
     // The in-memory reset still succeeds when storage is unavailable.
   }

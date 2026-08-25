@@ -22,7 +22,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -60,44 +59,6 @@ interface SummaryScreenProps {
   onOpenCategories: () => void
 }
 
-function formatCategoryCount(count: number) {
-  if (count === 1) {
-    return "1 kategoria"
-  }
-
-  const lastDigit = count % 10
-  const lastTwoDigits = count % 100
-
-  if (
-    lastDigit >= 2 &&
-    lastDigit <= 4 &&
-    !(lastTwoDigits >= 12 && lastTwoDigits <= 14)
-  ) {
-    return `${count} kategorie`
-  }
-
-  return `${count} kategorii`
-}
-
-function formatSubmissionCount(count: number) {
-  if (count === 1) {
-    return "1 zgłoszenie"
-  }
-
-  const lastDigit = count % 10
-  const lastTwoDigits = count % 100
-
-  if (
-    lastDigit >= 2 &&
-    lastDigit <= 4 &&
-    !(lastTwoDigits >= 12 && lastTwoDigits <= 14)
-  ) {
-    return `${count} zgłoszenia`
-  }
-
-  return `${count} zgłoszeń`
-}
-
 export function SummaryScreen({
   categories,
   scores,
@@ -119,19 +80,6 @@ export function SummaryScreen({
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             Ranking zgłoszeń
           </h1>
-          <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">
-            Zestawienie jest sortowane według łącznej liczby punktów. Remisy
-            zachowują kolejność zgłoszeń zdefiniowaną w aplikacji.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="secondary">
-            {formatSubmissionCount(ranking.length)}
-          </Badge>
-          <Badge variant="secondary">
-            {formatCategoryCount(categories.length)}
-          </Badge>
-          <Badge variant="secondary">Maks. {maximum} pkt</Badge>
         </div>
       </section>
 
@@ -141,9 +89,6 @@ export function SummaryScreen({
           <CardDescription>
             Wyniki wszystkich zgłoszeń z rozbiciem na kategorie.
           </CardDescription>
-          <CardAction>
-            <Badge variant="secondary">Suma malejąco</Badge>
-          </CardAction>
         </CardHeader>
         <CardContent>
           {categories.length > 0 ? (
