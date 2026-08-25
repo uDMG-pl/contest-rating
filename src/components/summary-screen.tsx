@@ -79,6 +79,25 @@ function formatCategoryCount(count: number) {
   return `${count} kategorii`
 }
 
+function formatSubmissionCount(count: number) {
+  if (count === 1) {
+    return "1 zgłoszenie"
+  }
+
+  const lastDigit = count % 10
+  const lastTwoDigits = count % 100
+
+  if (
+    lastDigit >= 2 &&
+    lastDigit <= 4 &&
+    !(lastTwoDigits >= 12 && lastTwoDigits <= 14)
+  ) {
+    return `${count} zgłoszenia`
+  }
+
+  return `${count} zgłoszeń`
+}
+
 export function SummaryScreen({
   categories,
   scores,
@@ -106,7 +125,9 @@ export function SummaryScreen({
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge variant="secondary">{ranking.length} zgłoszenia</Badge>
+          <Badge variant="secondary">
+            {formatSubmissionCount(ranking.length)}
+          </Badge>
           <Badge variant="secondary">
             {formatCategoryCount(categories.length)}
           </Badge>

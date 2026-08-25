@@ -93,7 +93,10 @@ export function RatingScreen({
   const maximum = categories.length * 10
   const isLastSubmission = currentIndex === submissionCount - 1
   const progress = ((currentIndex + 1) / submissionCount) * 100
-  const coordinates = submission.coordinates?.join(" ") ?? "Do uzupełnienia"
+  const coordinates =
+    submission.coordinates
+      ?.map((coordinate) => coordinate ?? "?")
+      .join(" ") ?? "Do uzupełnienia"
 
   return (
     <div className="flex flex-col gap-6">
