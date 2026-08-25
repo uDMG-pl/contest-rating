@@ -104,13 +104,13 @@ export function SummaryScreen({
                   <TableRow>
                     <TableHead>Miejsce</TableHead>
                     <TableHead>Zgłoszenie</TableHead>
+                    <TableHead className="text-right">Wynik</TableHead>
+                    <TableHead className="text-right">Procent</TableHead>
                     {categories.map((category) => (
                       <TableHead className="text-center" key={category.id}>
                         {category.name}
                       </TableHead>
                     ))}
-                    <TableHead className="text-right">Wynik</TableHead>
-                    <TableHead className="text-right">Procent</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -133,6 +133,12 @@ export function SummaryScreen({
                           </span>
                         </div>
                       </TableCell>
+                      <TableCell className="text-right font-medium tabular-nums">
+                        {row.total}/{row.maximum}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {row.percentage}%
+                      </TableCell>
                       {categories.map((category) => (
                         <TableCell
                           className="text-center tabular-nums"
@@ -141,12 +147,6 @@ export function SummaryScreen({
                           {scores[row.submission.id]?.[category.id] ?? 0}
                         </TableCell>
                       ))}
-                      <TableCell className="text-right font-medium tabular-nums">
-                        {row.total}/{row.maximum}
-                      </TableCell>
-                      <TableCell className="text-right tabular-nums">
-                        {row.percentage}%
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
