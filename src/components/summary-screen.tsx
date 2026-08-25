@@ -36,6 +36,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Table,
   TableBody,
@@ -94,59 +95,64 @@ export function SummaryScreen({
         </CardHeader>
         <CardContent>
           {categories.length > 0 ? (
-            <Table>
-              <TableCaption>
-                Maksymalny wynik jednego zgłoszenia: {maximum} punktów.
-              </TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Miejsce</TableHead>
-                  <TableHead>Zgłoszenie</TableHead>
-                  {categories.map((category) => (
-                    <TableHead className="text-center" key={category.id}>
-                      {category.name}
-                    </TableHead>
-                  ))}
-                  <TableHead className="text-right">Wynik</TableHead>
-                  <TableHead className="text-right">Procent</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {ranking.map((row, index) => (
-                  <TableRow key={row.submission.id}>
-                    <TableCell>
-                      <Badge
-                        variant={placementBadgeVariants[index] ?? "outline"}
-                      >
-                        {index + 1}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="max-w-64 whitespace-normal">
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-medium">{row.submission.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {row.submission.minecraft}
-                        </span>
-                      </div>
-                    </TableCell>
+            <ScrollArea className="w-full [&_[data-slot=table-container]]:overflow-visible">
+              <Table className="min-w-max">
+                <TableCaption>
+                  Maksymalny wynik jednego zgłoszenia: {maximum} punktów.
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Miejsce</TableHead>
+                    <TableHead>Zgłoszenie</TableHead>
                     {categories.map((category) => (
-                      <TableCell
-                        className="text-center tabular-nums"
-                        key={category.id}
-                      >
-                        {scores[row.submission.id]?.[category.id] ?? 0}
-                      </TableCell>
+                      <TableHead className="text-center" key={category.id}>
+                        {category.name}
+                      </TableHead>
                     ))}
-                    <TableCell className="text-right font-medium tabular-nums">
-                      {row.total}/{row.maximum}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {row.percentage}%
-                    </TableCell>
+                    <TableHead className="text-right">Wynik</TableHead>
+                    <TableHead className="text-right">Procent</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {ranking.map((row, index) => (
+                    <TableRow key={row.submission.id}>
+                      <TableCell>
+                        <Badge
+                          variant={placementBadgeVariants[index] ?? "outline"}
+                        >
+                          {index + 1}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="max-w-64 whitespace-normal">
+                        <div className="flex flex-col gap-0.5">
+                          <span className="font-medium">
+                            {row.submission.name}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {row.submission.minecraft}
+                          </span>
+                        </div>
+                      </TableCell>
+                      {categories.map((category) => (
+                        <TableCell
+                          className="text-center tabular-nums"
+                          key={category.id}
+                        >
+                          {scores[row.submission.id]?.[category.id] ?? 0}
+                        </TableCell>
+                      ))}
+                      <TableCell className="text-right font-medium tabular-nums">
+                        {row.total}/{row.maximum}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {row.percentage}%
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
           ) : (
             <Empty className="border">
               <EmptyHeader>
