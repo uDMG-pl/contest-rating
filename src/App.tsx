@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { TrophyIcon } from "lucide-react"
 
 import { CategoryManager } from "@/src/components/category-manager"
 import { RatingScreen } from "@/src/components/rating-screen"
@@ -151,18 +150,7 @@ function App() {
   return (
     <div className="min-h-svh bg-muted/20">
       <header className="border-b bg-background">
-        <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <TrophyIcon className="size-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="truncate font-medium">Ocena konkursu</p>
-              <p className="truncate text-xs text-muted-foreground">
-                Panel jury
-              </p>
-            </div>
-          </div>
+        <div className="mx-auto flex w-full max-w-5xl items-center justify-end px-4 py-3 sm:px-6">
           <CategoryManager
             categories={contestState.categories}
             open={categoryManagerOpen}
