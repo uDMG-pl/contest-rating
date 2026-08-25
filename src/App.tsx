@@ -10,6 +10,7 @@ import {
   createCategoryId,
   createDefaultContestState,
   loadContestState,
+  normalizeScore,
   saveContestState,
 } from "@/src/lib/contest-state"
 
@@ -72,7 +73,7 @@ function App() {
         ...current.scores,
         [currentSubmission.id]: {
           ...current.scores[currentSubmission.id],
-          [categoryId]: Math.min(10, Math.max(1, Math.round(score))),
+          [categoryId]: normalizeScore(score),
         },
       },
     }))

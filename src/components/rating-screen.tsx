@@ -12,6 +12,7 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Card,
   CardAction,
@@ -176,7 +177,11 @@ export function RatingScreen({
             <FieldGroup>
               {categories.map((category, index) => {
                 const score = submissionScores[category.id] ?? 0
+                const wholeScore = Math.floor(score)
+                const hasHalfPoint = score % 1 === 0.5
+                const halfPointDisabled = score === 0 || wholeScore === 10
                 const labelId = `score-${submission.id}-${category.id}`
+                const halfPointId = `${labelId}-half-point`
 
                 return (
                   <Fragment key={category.id}>
@@ -196,37 +201,69 @@ export function RatingScreen({
                           </Badge>
                         </span>
                       </FieldLegend>
-                      <RadioGroup
-                        value={score === 0 ? "" : String(score)}
-                        aria-labelledby={labelId}
-                        className="mt-4 grid grid-cols-5 justify-items-center gap-2 sm:grid-cols-10"
-                        onValueChange={(value) =>
-                          onScoreChange(category.id, Number(value))
-                        }
-                      >
-                        {RATING_VALUES.map((value) => {
-                          const optionId = `${labelId}-${value}`
+                      <div className="mt-4 grid grid-cols-6 justify-items-center gap-2 sm:grid-cols-11">
+                        <RadioGroup
+                          value={score === 0 ? "" : String(wholeScore)}
+                          aria-labelledby={labelId}
+                          className="contents"
+                          onValueChange={(value) => {
+                            const selectedScore = Number(value)
 
-                          return (
-                            <FieldLabel
-                              key={value}
-                              htmlFor={optionId}
-                              className="relative size-14 max-w-14 cursor-pointer justify-center"
-                            >
-                              <Field className="size-full">
-                                <RadioGroupItem
-                                  id={optionId}
-                                  value={String(value)}
-                                  className="sr-only"
-                                />
-                                <span className="pointer-events-none absolute inset-0 flex items-center justify-center tabular-nums">
-                                  {value}
-                                </span>
-                              </Field>
-                            </FieldLabel>
-                          )
-                        })}
-                      </RadioGroup>
+                            onScoreChange(
+                              category.id,
+                              selectedScore +
+                                (hasHalfPoint && selectedScore < 10 ? 0.5 : 0),
+                            )
+                          }}
+                        >
+                          {RATING_VALUES.map((value) => {
+                            const optionId = `${labelId}-${value}`
+
+                            return (
+                              <FieldLabel
+                                key={value}
+                                htmlFor={optionId}
+                                className="relative size-11 max-w-11 cursor-pointer justify-center sm:size-14 sm:max-w-14"
+                              >
+                                <Field className="size-full">
+                                  <RadioGroupItem
+                                    id={optionId}
+                                    value={String(value)}
+                                    className="sr-only"
+                                  />
+                                  <span className="pointer-events-none absolute inset-0 flex items-center justify-center tabular-nums">
+                                    {value}
+                                  </span>
+                                </Field>
+                              </FieldLabel>
+                            )
+                          })}
+                        </RadioGroup>
+                        <FieldLabel
+                          htmlFor={halfPointId}
+                          data-disabled={halfPointDisabled || undefined}
+                          className="relative size-11 max-w-11 cursor-pointer justify-center has-data-checked:border-primary! has-data-checked:bg-transparent! data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50 sm:size-14 sm:max-w-14"
+                        >
+                          <Field className="size-full">
+                            <Checkbox
+                              id={halfPointId}
+                              checked={hasHalfPoint}
+                              disabled={halfPointDisabled}
+                              aria-label="Dodaj pół punktu"
+                              className="sr-only"
+                              onCheckedChange={(checked) =>
+                                onScoreChange(
+                                  category.id,
+                                  wholeScore + (checked ? 0.5 : 0),
+                                )
+                              }
+                            />
+                            <span className="pointer-events-none absolute inset-0 flex items-center justify-center tabular-nums">
+                              +½
+                            </span>
+                          </Field>
+                        </FieldLabel>
+                      </div>
                     </FieldSet>
                   </Fragment>
                 )

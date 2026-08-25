@@ -42,12 +42,12 @@ export const DEFAULT_CATEGORIES: readonly Category[] = [
   AUDIENCE_RATING_CATEGORY,
 ] as const
 
-function clampScore(value: unknown) {
+export function normalizeScore(value: unknown) {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return 0
   }
 
-  return Math.min(10, Math.max(0, Math.round(value)))
+  return Math.min(10, Math.max(0, Math.round(value * 2) / 2))
 }
 
 function createScores(
@@ -65,7 +65,7 @@ function createScores(
       Object.fromEntries(
         categories.map((category) => [
           category.id,
-          clampScore(source[submission.id]?.[category.id]),
+          normalizeScore(source[submission.id]?.[category.id]),
         ]),
       ),
     ]),
