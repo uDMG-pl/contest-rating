@@ -37,7 +37,7 @@ function App() {
         target instanceof HTMLElement &&
         (target.isContentEditable ||
           target.closest(
-            "input, textarea, button, [role='slider'], [role='dialog']",
+            "input, textarea, button, [role='radio'], [role='dialog']",
           ))
       ) {
         return
@@ -72,7 +72,7 @@ function App() {
         ...current.scores,
         [currentSubmission.id]: {
           ...current.scores[currentSubmission.id],
-          [categoryId]: Math.min(10, Math.max(0, Math.round(score))),
+          [categoryId]: Math.min(10, Math.max(1, Math.round(score))),
         },
       },
     }))

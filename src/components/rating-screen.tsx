@@ -29,10 +29,19 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import { Field, FieldGroup, FieldTitle } from "@/components/ui/field"
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field"
 import { Progress } from "@/components/ui/progress"
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
-import { Slider } from "@/components/ui/slider"
 import type { Submission } from "@/src/data/submissions"
 import {
   getSubmissionTotal,
@@ -40,6 +49,8 @@ import {
   type Scores,
 } from "@/src/lib/contest-state"
 import { cn } from "@/lib/utils"
+
+const RATING_VALUES = Array.from({ length: 10 }, (_, index) => index + 1)
 
 interface RatingScreenProps {
   submission: Submission
@@ -157,8 +168,7 @@ export function RatingScreen({
         <CardHeader>
           <CardTitle>Oceny</CardTitle>
           <CardDescription>
-            Przesuń suwak lub użyj klawiszy strzałek. Każda kategoria ma
-            zakres od 0 do 10.
+            Wybierz jedną ocenę od 1 do 10 dla każdej kategorii.
           </CardDescription>
           <CardAction>
             <Badge variant="secondary">
@@ -176,29 +186,53 @@ export function RatingScreen({
                 return (
                   <Fragment key={category.id}>
                     {index > 0 ? <Separator /> : null}
-                    <Field>
-                      <div className="flex items-start justify-between gap-4">
-                        <FieldTitle id={labelId}>{category.name}</FieldTitle>
-                        <Badge variant="outline">{score}/10</Badge>
-                      </div>
-                      <Slider
-                        value={[score]}
-                        min={0}
-                        max={10}
-                        step={1}
+                    <FieldSet className="gap-5">
+                      <FieldLegend
+                        id={labelId}
+                        variant="label"
+                        className="mb-0 w-full"
+                      >
+                        <span className="flex w-full items-start justify-between gap-4">
+                          <span>{category.name}</span>
+                          <Badge
+                            variant={score === 0 ? "secondary" : "outline"}
+                          >
+                            {score === 0 ? "Nie oceniono" : `${score}/10`}
+                          </Badge>
+                        </span>
+                      </FieldLegend>
+                      <RadioGroup
+                        value={score === 0 ? "" : String(score)}
                         aria-labelledby={labelId}
-                        onValueChange={(value) => {
-                          const nextScore = Array.isArray(value)
-                            ? (value[0] ?? 0)
-                            : value
-                          onScoreChange(category.id, nextScore)
-                        }}
-                      />
-                      <div className="flex justify-between text-xs tabular-nums text-muted-foreground">
-                        <span>0</span>
-                        <span>10</span>
-                      </div>
-                    </Field>
+                        className="mt-4 grid grid-cols-5 justify-items-center gap-2 sm:grid-cols-10"
+                        onValueChange={(value) =>
+                          onScoreChange(category.id, Number(value))
+                        }
+                      >
+                        {RATING_VALUES.map((value) => {
+                          const optionId = `${labelId}-${value}`
+
+                          return (
+                            <FieldLabel
+                              key={value}
+                              htmlFor={optionId}
+                              className="relative size-14 max-w-14 cursor-pointer justify-center"
+                            >
+                              <Field className="size-full">
+                                <RadioGroupItem
+                                  id={optionId}
+                                  value={String(value)}
+                                  className="sr-only"
+                                />
+                                <span className="pointer-events-none absolute inset-0 flex items-center justify-center tabular-nums">
+                                  {value}
+                                </span>
+                              </Field>
+                            </FieldLabel>
+                          )
+                        })}
+                      </RadioGroup>
+                    </FieldSet>
                   </Fragment>
                 )
               })}
