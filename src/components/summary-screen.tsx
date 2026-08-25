@@ -1,5 +1,7 @@
+import { useState, type MouseEvent } from "react"
 import {
   ArrowLeftIcon,
+  DownloadIcon,
   RotateCcwIcon,
   Settings2Icon,
   TagsIcon,
@@ -40,7 +42,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -51,6 +52,7 @@ import {
   type Category,
   type Scores,
 } from "@/src/lib/contest-state"
+import { createResultsImageUrl } from "@/src/lib/results-image"
 
 interface SummaryScreenProps {
   categories: readonly Category[]
@@ -69,8 +71,19 @@ export function SummaryScreen({
   onReset,
   onOpenCategories,
 }: SummaryScreenProps) {
+  const [downloadError, setDownloadError] = useState("")
   const ranking = createRanking(categories, scores)
-  const maximum = categories.length * 10
+
+  function handleDownload(event: MouseEvent<HTMLAnchorElement>) {
+    setDownloadError("")
+
+    try {
+      event.currentTarget.href = createResultsImageUrl(categories, scores)
+    } catch {
+      event.preventDefault()
+      setDownloadError("Nie udało się pobrać obrazu. Spróbuj ponownie.")
+    }
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -81,7 +94,7 @@ export function SummaryScreen({
         </Badge>
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            Ranking zgłoszeń
+            Podsumowanie Konkursu
           </h1>
         </div>
       </section>
@@ -97,9 +110,6 @@ export function SummaryScreen({
           {categories.length > 0 ? (
             <ScrollArea className="w-full [&_[data-slot=table-container]]:overflow-visible">
               <Table className="min-w-max">
-                <TableCaption>
-                  Maksymalny wynik jednego zgłoszenia: {maximum} punktów.
-                </TableCaption>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Miejsce</TableHead>
@@ -205,6 +215,34 @@ export function SummaryScreen({
           </AlertDialog>
         </CardFooter>
       </Card>
+
+      <div className="flex flex-col items-end gap-2">
+        {categories.length > 0 ? (
+          <Button
+            nativeButton={false}
+            render={
+              <a
+                href="data:,"
+                download="wyniki-konkursu.png"
+                onClick={handleDownload}
+              />
+            }
+          >
+            <DownloadIcon data-icon="inline-start" />
+            Pobierz obraz
+          </Button>
+        ) : (
+          <Button disabled>
+            <DownloadIcon data-icon="inline-start" />
+            Pobierz obraz
+          </Button>
+        )}
+        {downloadError ? (
+          <p className="text-sm text-destructive" role="alert">
+            {downloadError}
+          </p>
+        ) : null}
+      </div>
     </div>
   )
 }
