@@ -201,8 +201,8 @@ export function SummaryScreen({
                 </AlertDialogMedia>
                 <AlertDialogTitle>Wyczyścić wszystkie oceny?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Przywrócimy domyślne kategorie i ustawimy wszystkie wyniki na
-                  0. Tej operacji nie można cofnąć.
+                  Przywrócimy domyślne kategorie i usuniemy wszystkie oceny
+                  oraz głosy z czatu. Tej operacji nie można cofnąć.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

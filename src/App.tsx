@@ -4,6 +4,8 @@ import { CategoryManager } from "@/src/components/category-manager"
 import { RatingScreen } from "@/src/components/rating-screen"
 import { SummaryScreen } from "@/src/components/summary-screen"
 import { SUBMISSIONS } from "@/src/data/submissions"
+import { AUDIENCE_CATEGORY_ID } from "@/src/lib/audience-votes"
+import { useAudienceRating } from "@/src/lib/use-audience-rating"
 import {
   clearSavedContestState,
   createCategoryId,
@@ -20,6 +22,10 @@ function App() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [view, setView] = useState<AppView>("rating")
   const [categoryManagerOpen, setCategoryManagerOpen] = useState(false)
+  const audienceRating = useAudienceRating(
+    SUBMISSIONS[currentIndex].id,
+    view === "rating" && contestState.categories.some(({ id }) => id === AUDIENCE_CATEGORY_ID),
+  )
 
   useEffect(() => {
     saveContestState(contestState)
@@ -139,6 +145,7 @@ function App() {
   }
 
   function handleReset() {
+    audienceRating.reset()
     clearSavedContestState()
     setContestState(createDefaultContestState())
     setCurrentIndex(0)
@@ -170,6 +177,7 @@ function App() {
             submissionCount={SUBMISSIONS.length}
             categories={contestState.categories}
             scores={contestState.scores}
+            audienceRating={audienceRating}
             onScoreChange={handleScoreChange}
             onPrevious={handlePrevious}
             onNext={handleNext}

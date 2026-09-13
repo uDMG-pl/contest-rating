@@ -50,6 +50,8 @@ import {
   type Scores,
 } from "@/src/lib/contest-state"
 import { cn } from "@/lib/utils"
+import { AUDIENCE_CATEGORY_ID } from "@/src/lib/audience-votes"
+import { AudienceRatingHint, type AudienceRatingHintProps } from "./audience-rating-hint"
 
 const RATING_VALUES = Array.from({ length: 11 }, (_, index) => index)
 
@@ -59,6 +61,7 @@ interface RatingScreenProps {
   submissionCount: number
   categories: readonly Category[]
   scores: Scores
+  audienceRating: AudienceRatingHintProps
   onScoreChange: (categoryId: string, score: number) => void
   onPrevious: () => void
   onNext: () => void
@@ -95,6 +98,7 @@ export function RatingScreen({
   submissionCount,
   categories,
   scores,
+  audienceRating,
   onScoreChange,
   onPrevious,
   onNext,
@@ -201,6 +205,9 @@ export function RatingScreen({
                           </Badge>
                         </span>
                       </FieldLegend>
+                      {category.id === AUDIENCE_CATEGORY_ID ? (
+                        <AudienceRatingHint {...audienceRating} />
+                      ) : null}
                       <div className="mt-4 grid grid-cols-6 justify-items-center gap-2 sm:grid-cols-12">
                         <RadioGroup
                           value={score === null ? "" : String(wholeScore)}

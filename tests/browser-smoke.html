@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Test integracji czatu</title>
+  </head>
+  <body>
+    <aside style="padding: 12px; position: sticky; top: 0; z-index: 100; background: Canvas; color: CanvasText">
+      <strong>Symulacja czatu — oddzielne dane testowe</strong>
+      <button id="votes">Głosy 8 i 10</button>
+      <button id="correction">Popraw pierwszy głos na 6</button>
+      <button id="disconnect">Zerwij połączenie</button>
+    </aside>
+    <div id="root"></div>
+    <script type="module" src="/tests/browser-smoke.tsx"></script>
+  </body>
+</html>
