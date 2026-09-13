@@ -31,7 +31,7 @@ export function AudienceRatingHint({ average, count, status }: AudienceRatingHin
         <a href={KICK_CHANNEL_URL} target="_blank" rel="noreferrer" className="underline underline-offset-4">
           kick.com/dmgpoland
         </a>
-        {" · Wpisz na czacie ocenę 0–10, np. 8 lub 8,5. Liczy się ostatnia ocena każdego widza. Ocenę do rankingu wybierasz ręcznie poniżej."}
+        {" · Wpisz na czacie ocenę 0–10 co 0,5, np. 1.5 lub 8,5. Inne ułamki są pomijane. Liczy się ostatnia poprawna ocena każdego widza. Ocenę do rankingu wybierasz ręcznie poniżej."}
       </p>
       {status === "reconnecting" ? (
         <p className="text-xs text-muted-foreground">

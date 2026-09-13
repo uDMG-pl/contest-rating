@@ -15,23 +15,38 @@ function memoryStorage() {
   }
 }
 
-test("accepts only entire numeric scores in range, without half-point rounding", () => {
-  for (const [text, score] of [["0", 0], ["10", 10], [" 8 ", 8], ["8.5", 8.5], ["8,5", 8.5], ["7.83", 7.83], ["10,00", 10]] as const) {
+test("accepts only scores from 0 to 10 in half-point increments", () => {
+  for (const [text, score] of [["0", 0], ["10", 10], [" 8 ", 8], ["8.5", 8.5], ["8,5", 8.5], ["1.5", 1.5], ["0,5", 0.5], ["9.50", 9.5], ["10,00", 10]] as const) {
     assert.equal(parseAudienceScore(text), score)
   }
-  for (const text of ["", " ", "11", "-1", "10.01", "daję 8", "8/10", "8 9", "1e1", "0xA", "Infinity", "8,5.1", "8\n9", null, 8, {}]) {
+  for (const text of ["7.83", "1.25", "0.1", "9.99", "", " ", "11", "-1", "10.01", "daję 8", "8/10", "8 9", "1e1", "0xA", "Infinity", "8,5.1", "8\n9", null, 8, {}]) {
     assert.equal(parseAudienceScore(text), null, String(text))
   }
 })
 
 test("validates native Kick payload and its JSON-encoded form", () => {
-  const payload = { id: "msg", content: "7,83", created_at: "2026-09-12T10:00:00.123Z", sender: { id: 7 }, chatroom_id: KICK_CHATROOM_ID }
-  const expected = vote("7", 7.83, Date.parse(payload.created_at), "msg")
+  const payload = { id: "msg", content: "7,5", created_at: "2026-09-12T10:00:00.123Z", sender: { id: 7 }, chatroom_id: KICK_CHATROOM_ID }
+  const expected = vote("7", 7.5, Date.parse(payload.created_at), "msg")
   assert.deepEqual(parseChatVote(payload), expected)
   assert.deepEqual(parseChatVote(JSON.stringify(payload)), expected)
   for (const bad of ["{", null, [], { ...payload, sender: null }, { ...payload, sender: { id: 0 } }, { ...payload, created_at: "invalid" }, { ...payload, id: "" }, { ...payload, chatroom_id: 2 }, { ...payload, content: "hello" }]) {
     assert.equal(parseChatVote(bad), null)
   }
+})
+
+test("invalid fractions cannot replace valid votes or return from storage", () => {
+  const storage = memoryStorage()
+  const store = new AudienceVoteStore(["a"], storage)
+  store.activate("a", 0)
+  store.record(vote("1", 1.5))
+  store.record(vote("1", 1.25, 2000))
+  store.record(vote("2", 7.83))
+  assert.deepEqual(getAudienceAverage(store.getSnapshot().a), { average: 1.5, count: 1 })
+  store.flush()
+  storage.setItem(AUDIENCE_STORAGE_KEY, JSON.stringify({
+    a: { "1": vote("1", 1.5), "2": vote("2", 7.83), "3": vote("3", 0.5) },
+  }))
+  assert.deepEqual(getAudienceAverage(loadAudienceVotes(storage, ["a"]).a), { average: 1, count: 2 })
 })
 
 test("one latest vote per viewer; ignores duplicates and out-of-order updates", () => {
@@ -40,12 +55,12 @@ test("one latest vote per viewer; ignores duplicates and out-of-order updates", 
   store.record(vote("1", 8, 1000))
   store.record(vote("2", 10, 1000))
   assert.deepEqual(getAudienceAverage(store.getSnapshot().a), { average: 9, count: 2 })
-  store.record(vote("1", 7.33, 2000))
+  store.record(vote("1", 7.5, 2000))
   store.record(vote("1", 1, 1500))
-  store.record(vote("1", 7.33, 2000))
-  assert.deepEqual(getAudienceAverage(store.getSnapshot().a), { average: 8.665, count: 2 })
+  store.record(vote("1", 7.5, 2000))
+  assert.deepEqual(getAudienceAverage(store.getSnapshot().a), { average: 8.75, count: 2 })
   store.record(vote("1", 6, 2000, "second-at-same-time"))
-  store.record(vote("1", 7.33, 2000))
+  store.record(vote("1", 7.5, 2000))
   assert.equal(store.getSnapshot().a["1"].score, 6)
   store.flush()
 })

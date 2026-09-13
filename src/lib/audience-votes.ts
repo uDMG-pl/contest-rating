@@ -1,4 +1,4 @@
-import type { ChatVote } from "./kick-chat.ts"
+import { isAudienceScore, type ChatVote } from "./kick-chat.ts"
 
 export const AUDIENCE_CATEGORY_ID = "audience-rating"
 export const AUDIENCE_STORAGE_KEY = "contest-rating:audience:v1"
@@ -27,7 +27,7 @@ export function loadAudienceVotes(storage: VoteStorage | undefined, ids: readonl
         const vote = value as ChatVote
         if (
           /^[1-9]\d*$/.test(userId) && vote.userId === userId &&
-          typeof vote.score === "number" && Number.isFinite(vote.score) && vote.score >= 0 && vote.score <= 10 &&
+          isAudienceScore(vote.score) &&
           typeof vote.messageId === "string" && vote.messageId &&
           typeof vote.timestamp === "number" && Number.isFinite(vote.timestamp)
         ) valid[userId] = vote
@@ -66,6 +66,7 @@ export class AudienceVoteStore {
   }
 
   record = (vote: ChatVote) => {
+    if (!isAudienceScore(vote.score)) return
     if (!this.active || vote.timestamp < this.active.since) return
     if (this.seenMessages.has(vote.messageId)) return
     this.seenMessages.add(vote.messageId)

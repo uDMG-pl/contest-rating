@@ -19,12 +19,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
+export function isAudienceScore(score: unknown): score is number {
+  return typeof score === "number" && score >= 0 && score <= 10 && Number.isInteger(score * 2)
+}
+
 export function parseAudienceScore(content: unknown): number | null {
   if (typeof content !== "string") return null
   const value = content.trim()
   if (!/^\d+(?:[.,]\d+)?$/.test(value)) return null
   const score = Number(value.replace(",", "."))
-  return Number.isFinite(score) && score >= 0 && score <= 10 ? score : null
+  return isAudienceScore(score) ? score : null
 }
 
 function parseData(data: unknown): unknown {

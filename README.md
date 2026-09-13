@@ -15,7 +15,9 @@ Strona automatycznie łączy się z publicznym czatem `kick.com/dmgpoland`.
 Podpowiedź przy kategorii o ID `audience-rating` pokazuje średnią i liczbę
 głosujących. Ręczna ocena nadal decyduje o rankingu i eksporcie.
 
-- Głos to cała wiadomość z liczbą od 0 do 10, np. `8`, `8.5` lub `8,5`.
+- Głos to cała wiadomość z liczbą od 0 do 10 co 0,5, np. `8`, `1.5` lub `8,5`.
+  Inne ułamki (np. `7,83`) są pomijane, również przy odczycie zapisanych głosów.
+  Średnia jest obliczana z poprawnych głosów bez zaokrąglania do pół punktu.
 - Liczy się ostatnia poprawna ocena danego ID użytkownika, osobno dla każdego zgłoszenia.
 - Głosy są zbierane od wejścia na zgłoszenie. Powrót kontynuuje zapisane głosy;
   podsumowanie i brak kategorii widzów wstrzymują zbieranie.
